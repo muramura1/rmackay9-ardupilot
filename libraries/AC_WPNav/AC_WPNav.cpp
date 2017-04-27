@@ -594,28 +594,10 @@ bool AC_WPNav::advance_wp_target_along_track(float dt)
     float track_error_z = fabsf(track_error.z);
 
     // calculate how far along the track we could move the intermediate target before reaching the end of the leash
-    float track_leash_length_sq = sq(_track_leash_length);
-    float track_error_z_sq = sq(track_error_z);
-    float track_error_xy_sq = sq(track_error_xy);
-    float track_leash_slack_z = (track_leash_length_sq > track_error_z_sq) ? safe_sqrt(track_leash_length_sq-track_error_z_sq) : 0;
-    float track_leash_slack_xy = (track_leash_length_sq > track_error_xy_sq) ? safe_sqrt(track_leash_length_sq-track_error_xy_sq) : 0;
-    track_leash_slack = MIN(track_leash_slack_z, track_leash_slack_xy);
-    track_desired_max = track_covered + track_leash_slack;
-
     float track_leash_length_abs = fabsf(_track_leash_length);
     float track_error_max_abs = MAX(fabsf(track_error_z), fabsf(track_error_xy));
-    float track_leash_slack2 = (track_leash_length_abs > track_error_max_abs) ? safe_sqrt(sq(_track_leash_length) - sq(track_error_max_abs)) : 0;
-    float track_desired_max2 = track_covered + track_leash_slack2;
-
-    // debug
-    static uint8_t counter = 0;
-    if (counter > 20) {
-        counter = 0;
-        ::printf("tdm:%4.2f/%4.2f eq:%d\n",
-                (double)track_desired_max,
-                (double)track_desired_max2,
-                (int)is_equal(track_desired_max, track_desired_max2));
-    }
+    float track_leash_slack = (track_leash_length_abs > track_error_max_abs) ? safe_sqrt(sq(_track_leash_length) - sq(track_error_max_abs)) : 0;
+    float track_desired_max = track_covered + track_leash_slack;
 
     // check if target is already beyond the leash
     if (_track_desired > track_desired_max) {

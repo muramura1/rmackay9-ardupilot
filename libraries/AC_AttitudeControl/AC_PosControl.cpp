@@ -268,9 +268,6 @@ void AC_PosControl::get_stopping_point_z(Vector3f& stopping_point) const
     // if position controller is active add current velocity error to avoid sudden jump in acceleration
     if (is_active_z()) {
         curr_vel_z += _vel_error.z;
-        if (_flags.use_desvel_ff_z) {
-            curr_vel_z -= _vel_desired.z;
-        }
     }
 
     // avoid divide by zero by using current position if kP is very low or acceleration is zero
